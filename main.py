@@ -42,7 +42,6 @@ def mutation(individual, mutation_probability):
 
 def local_improvement(individual, items):
     knapsack_items = individual.items.copy()
-    # Keep track of the total weight and value of the items
     current_weight = individual.weight
     current_value = individual.value
 
@@ -64,12 +63,13 @@ def print_knapsack(knapsack):
     print("Knapsack : weight = {}, value = {}".format(knapsack.weight, knapsack.value))
 
 if __name__ == "__main__":
+    generations_number = int(input('Enter number of generations: '))
     items = generate_items(100)
     population = generate_population(100, items)
 
-    for generation in range(1000):
+    for generation in range(generations_number):
         new_population = []
-        for i in range(50):
+        for i in range(100):
             parent1 = random.choice(population)
             parent2 = random.choice(population)
             child = crossover(parent1, parent2)
@@ -77,9 +77,17 @@ if __name__ == "__main__":
             local_improvement(child, items)
             new_population.append(child)
         population = new_population
-        print_population(population)
+    total_fitness = sum([knapsack.value for knapsack in population])
+    mean_fitness = int(total_fitness / len(population))
+    max_fitness = max(population, key=lambda x: x.value)
 
     best_individual = max(population, key=lambda x: x.value)
     print_knapsack(best_individual)
     print("Best knapsack value:", best_individual.value)
-    
+    print("Mean fitness:", mean_fitness)
+    print("Max fitness:", max_fitness.value)
+    print("Knapsack items: ")
+    for item in best_individual.items:
+        print(f"Item: value = {item.value},\tweight = {item.weight}")
+
+
